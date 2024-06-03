@@ -18,12 +18,9 @@ class CategoryController extends AbstractController
     public function index(CategoryRepository $categoryRepository): Response
     {
         return $this->json(['data' => $categoryRepository->findAll()], Response::HTTP_OK);
-//        return $this->render('category/index.html.twig', [
-//            'categories' => $categoryRepository->findAll(),
-//        ]);
     }
 
-    #[Route('/new', name: 'app_category_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_category_new', methods: ['GET', 'POST'], schemes: ['form'], locale: 'fr')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $category = new Category();
@@ -34,7 +31,7 @@ class CategoryController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+            return $this->json(['data' => $category], Response::HTTP_BAD_REQUEST);
         }
 
         return $this->render('category/new.html.twig', [
